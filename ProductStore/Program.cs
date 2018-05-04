@@ -60,8 +60,38 @@ namespace ProductStore
 
     }
 
-    class StoreProduct
+    class StoreProduct: List<Product>
     {
+        public StoreProduct(IEnumerable<Product> collection) : base(collection) { }
+        public StoreProduct() { }
+        public void Run()
+        {
+            ShowProducts();
+        }
+
+        
+
+
+        private void ShowProducts()
+        {
+            if (this.Capacity==0)
+            {
+                Console.WriteLine("No product");
+            }
+            else
+            {
+                foreach (var product in this)
+                {
+                    Console.WriteLine(product);
+                }
+            }
+            
+
+
+
+        }
+
+
 
 
     }
@@ -73,6 +103,12 @@ namespace ProductStore
     {
         static void Main(string[] args)
         {
+            StoreProduct store = new StoreProduct();
+
+            store.Run();
+            
+
+
 
         }
     }
