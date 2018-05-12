@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace MenuSpace
 {
+    /*
+      Клас  горизонтального меню   
+    */
+
     class HorizontalMenu
     {
         private List<string> MenuItem;
@@ -29,7 +33,6 @@ namespace MenuSpace
 
         public string Show()
         {
-
             do
             {
                 //друк меню
@@ -48,33 +51,28 @@ namespace MenuSpace
                 //перевірка нажаття клавіш
                 key = Console.ReadKey();
                 if (key.Key == ConsoleKey.RightArrow && ActiveItem < MenuItem.Count - 1)
-                {
-                    ActiveItem++;
-                }
+                  ActiveItem++;
                 if (key.Key == ConsoleKey.LeftArrow && ActiveItem > 0)
-                {
-                    ActiveItem--;
-                }
+                  ActiveItem--;
+                
 
-            }//вихді якщо нажади Ентер
+            }//виході якщо нажати Ентер
             while (key.Key != ConsoleKey.Enter);
-            //Console.Clear();
             Console.ForegroundColor= ConsoleColor.Green;
             Console.WriteLine();
-            return MenuItem[ActiveItem];
+            return MenuItem[ActiveItem]; // вертаємо значення горизонтального меню
 
-
-
-        }//вихді якщо нажади Ентер
-
-
-
-
+        }
     }
 
-    
 
-        class Menu
+    /*
+      Клас  вертикального меню   
+    */
+
+
+
+    class Menu
     {
 
         private int ActiveItem = 0;
@@ -84,18 +82,14 @@ namespace MenuSpace
         private GetMethod Method;
         private List<Tuple<string, GetMethod>> MenuItem;
         private ConsoleKeyInfo key;
-        public Menu()
-        {
 
-        }
-
+        public Menu() {}
         public Menu(int x, int y, List<Tuple<string, GetMethod>> temp)
         {
             PosXmenu = x;
             PosYmenu = y;
             MenuItem = temp;
         }
-
         private void SetColorText(int x, int y, string text, ConsoleColor color)
         {
             Console.SetCursorPosition(x, y);
@@ -105,7 +99,6 @@ namespace MenuSpace
 
         public void Show()
         {
-           
             do
             {
                 
@@ -139,14 +132,11 @@ namespace MenuSpace
             Method = MenuItem[ActiveItem].Item2;
             Method.Invoke();
         }//вихді якщо нажади Ентер
-        
-
+   
         public void Add(Tuple<string, GetMethod> item)
-        {
-            MenuItem.Add(item);
-        }
-
-        
+            {
+                MenuItem.Add(item);
+            }
 
     }
 }

@@ -267,9 +267,6 @@ namespace ProductStore
                 default:
                     break;
             }
-            
-
-            
             Console.Clear();
         }
 
@@ -322,11 +319,9 @@ namespace ProductStore
                 Console.ReadLine();
             }
 
-
-
-
             Console.Clear();
         }
+
         private void Cancellation()
         {
             Console.WriteLine("CПИСАНИЕ:");
@@ -392,29 +387,20 @@ namespace ProductStore
         {
             do
             {
+               Console.WriteLine( "СИСТЕМА УПРАВЛЕНИЯ ПОТОКАМИ ТОВАРОВ");
                 Menu1.Show();
-
             } while (ExitFlag);
-
 
         }
 
     }
-
-
     class Program
     {
-
         static void Main(string[] args)
         {
-
             StoreProduct store = new StoreProduct();
             store.Run();
-
             Console.ReadKey();
-
-
-
         }
 
     }
