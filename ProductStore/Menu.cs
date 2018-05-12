@@ -6,7 +6,75 @@ using System.Threading.Tasks;
 
 namespace MenuSpace
 {
-    class Menu
+    class HorizontalMenu
+    {
+        private List<string> MenuItem;
+        private int ActiveItem = 0;
+        private ConsoleKeyInfo key;
+        private int PosXmenu = Console.CursorLeft; 
+        private int PosYmenu = Console.CursorTop;
+        
+        public HorizontalMenu(List<string> temp)
+        {
+            MenuItem = temp;
+            
+        }
+
+        private void SetColorText(int x, int y, string text, ConsoleColor color)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.ForegroundColor = color;
+            Console.Write(text);
+        }
+
+        public string Show()
+        {
+
+            do
+            {
+                //друк меню
+                
+                    for (int i = 0; i < MenuItem.Count; i++)
+                    {
+                        if (i == ActiveItem)
+                        {
+                            SetColorText(PosXmenu + i*10, PosYmenu , MenuItem[i], ConsoleColor.Yellow);
+                        }
+                        else
+                        {
+                            SetColorText(PosXmenu +i*10, PosYmenu , MenuItem[i], ConsoleColor.Green);
+                        }
+                    }
+                //перевірка нажаття клавіш
+                key = Console.ReadKey();
+                if (key.Key == ConsoleKey.RightArrow && ActiveItem < MenuItem.Count - 1)
+                {
+                    ActiveItem++;
+                }
+                if (key.Key == ConsoleKey.LeftArrow && ActiveItem > 0)
+                {
+                    ActiveItem--;
+                }
+
+            }//вихді якщо нажади Ентер
+            while (key.Key != ConsoleKey.Enter);
+            //Console.Clear();
+            Console.ForegroundColor= ConsoleColor.Green;
+            Console.WriteLine();
+            return MenuItem[ActiveItem];
+
+
+
+        }//вихді якщо нажади Ентер
+
+
+
+
+    }
+
+    
+
+        class Menu
     {
 
         private int ActiveItem = 0;
@@ -19,11 +87,6 @@ namespace MenuSpace
         public Menu()
         {
 
-            MenuItem = new List<Tuple<string, GetMethod>>
-            {
-                new Tuple<string, GetMethod>("Del", Del),
-                new Tuple<string, GetMethod>("Ask", Ask)
-            };
         }
 
         public Menu(int x, int y, List<Tuple<string, GetMethod>> temp)
@@ -43,9 +106,9 @@ namespace MenuSpace
         public void Show()
         {
            
-                do
+            do
             {
-
+                
                 //друк меню
                 for (int i = 0; i < MenuItem.Count; i++)
                 {
@@ -58,7 +121,7 @@ namespace MenuSpace
                         SetColorText(PosXmenu, PosYmenu + i, MenuItem[i].Item1, ConsoleColor.Green);
                     }
                 }
-
+                SetColorText(PosXmenu, PosYmenu-1, "  МЕНЮ", ConsoleColor.Green);
                 //перевірка нажаття клавіш
                 key = Console.ReadKey();
                 if (key.Key == ConsoleKey.DownArrow && ActiveItem < MenuItem.Count - 1)
@@ -83,16 +146,7 @@ namespace MenuSpace
             MenuItem.Add(item);
         }
 
-        private void Ask()
-        {
-            Console.WriteLine("Method Ask");
-
-        }
-        private void Del()
-        {
-            Console.WriteLine("Method Del");
-
-        }
+        
 
     }
 }

@@ -23,29 +23,28 @@ public delegate void GetMethod();
 
 namespace ProductStore
 {
-    enum ProductType { NoType, Food, Сlothes, Jewelry, Electronics, Toys, Furniture, HouseholdChemical }
+   enum ProductType { БезТипа, Молочные, Одежда, Украшения, Електроника, Игрушки, Инструменты, БытоваяХимия }
 
     abstract class Product
     {
         public string Name { get; set; }
         public double Price { get; set; }
         public int Quantity { get; set; }
-        public ProductType Type { get; set; }
-        public DateTime DateExpiration { get; set; }
+        public string Type { get; set; }
+
 
 
         public abstract void ShowInformation();
-        public Product(string name = "noname",
-                       ProductType type = ProductType.NoType,
+        public Product(string name = "без имени",
+                       string type = "без типа",
                        double price = 0.00,
-                       int quantity = 0,
-                       DateTime dateexp = new DateTime())
+                       int quantity = 0)
         {
             Name = name;
             Type = type;
             Price = price;
             Quantity = quantity;
-            DateExpiration = dateexp;
+
         }
 
 
@@ -59,23 +58,30 @@ namespace ProductStore
 
     class Food : Product
     {
+        private string PackageType;
+        private string PackageSize;
 
-        public Food(string name = "noname",
-                       ProductType type = ProductType.NoType,
+        public Food(string name = "нет имени",
+                       string type = "молочные",
                        double price = 0.00,
                        int quantity = 0,
-                       DateTime dateexp = new DateTime()):base(name, type, price, quantity, dateexp)
-        { }
+                       string packagetype = "",
+                       string packagesize = "") : base(name, type, price, quantity)
+        {
+            PackageType = packagetype;
+            PackageSize = packagesize;
+        }
 
 
         public override void ShowInformation()
         {
             {
-                Console.WriteLine($"Product:  Name:{Name,15}" +
-                                  $"          Type:{Type,10}" +
-                                  $"          Price: {Price,12}grn " +
-                                  $"          Quantity: {Quantity,5} p " +
-                                  $"          Date expiration {DateExpiration,10} ");
+                Console.WriteLine($" {Name,-20}" +
+                                  $"{Type,-15}" +
+                                  $"{Price,-20}" +
+                                  $"{Quantity,-15}" +
+                                  $"{PackageType,-20}" +
+                                  $"{PackageSize,-15}");
             }
         }
 
@@ -84,21 +90,83 @@ namespace ProductStore
 
     class HouseholdChemicals : Product
     {
+        private string PackageType;
+        private string PackageSize;
+
+
+        
+
+        public HouseholdChemicals(string name = "нет имени",
+                       string type = "молочные",
+                       double price = 0.00,
+                       int quantity = 0,
+                       string packagetype = "",
+                       string packagesize = "") : base(name, type, price, quantity)
+        {
+            PackageType = packagetype;
+            PackageSize = packagesize;
+        }
 
         public override void ShowInformation()
         {
-            throw new NotImplementedException();
+            {
+                Console.WriteLine($" {Name,-20}" +
+                                  $"{Type,-15}" +
+                                  $"{Price,-20}" +
+                                  $"{Quantity,-15}" +
+                                  $"{PackageType,-20}" +
+                                  $"{PackageSize,-15}");
+            }
         }
+
+
 
     }
 
     class StoreProduct : List<Product>
     {
-        private Menu Menu1;
-        private IMenu Item1;
-        private bool ExitFlag = true;
-       
-       
+        //private int idProduct = 0;
+        private Menu Menu1;// меню
+        private IMenu Item1;//список елементов меню
+        private bool ExitFlag = true; // флаг выхода из програмы
+        private double Summa = 0;
+        private int SellingCount = 0;
+        private double SellingSumma = 0;
+        private int CancellationCount = 0;
+        private double CancellationSumma = 0;
+
+
+        public double GetTotalValue()
+        {
+            Summa = 0;
+            if (this.Count != 0)
+            {
+                foreach (var product in this)
+                {
+                    Summa += product.Price * product.Quantity;
+                }
+            }
+            else
+            {
+                Summa = 0;
+            }
+
+            return Summa;
+
+        }
+        public double GetTotalQuantity()
+        {
+            int TempQuantity = 0;
+            foreach (var product in this)
+            {
+                TempQuantity += product.Quantity;
+            }
+            return TempQuantity;
+
+        }
+
+
+
         public StoreProduct()
         {
             Item1 = new IMenu
@@ -115,29 +183,57 @@ namespace ProductStore
         }
         private void Print()
         {
-            Console.WriteLine(new string('-', 80));
-            foreach (var product in this)
+            int idProduct = 1;
+            Console.WriteLine(new string('-', 110));
+            Console.WriteLine($"ID товара  Название товара   Тип товара     Цена товара    Количество товара   Тип упаковки    Обьем упаковки ");
+            Console.WriteLine(new string('-', 110));
+            if (this.Count != 0)
             {
-                product.ShowInformation();
+                foreach (var product in this)
+                {
+                    Console.Write($"{idProduct,-10}");
+                    product.ShowInformation();
+                    idProduct++;
+                }
             }
+            else
+            {
+                Console.WriteLine("На складе нет товаров");
+            }
+            Console.WriteLine(new string('-', 110));
+            Console.WriteLine($"Количество всех  товаров на складе:    { GetTotalQuantity()} штук");
+            Console.WriteLine($"Цена всех товаров на складе:    { GetTotalValue()} грн\n ");
+            Console.WriteLine($"Количество реализованных со склада товаров:    { SellingCount} штук");
+            Console.WriteLine($"Цена реализованных со склада товаров:    { SellingSumma} грн\n ");
+            Console.WriteLine($"Количество списанных со склада товаров:    { CancellationCount} штук");
+            Console.WriteLine($"Цена списанных со склада товаров:    {CancellationSumma} грн\n ");
 
-            Console.WriteLine(new string('-', 80));
             Console.Read();
             Console.Clear();
         }
-        
-           
-            
-        
+
+
         private void Receipt()
         {
-            Console.WriteLine("ДОБАВИТЬ ТОВАР:");
+            Console.WriteLine("ПРИХОД:");
             double price;
             int quantity;
-            DateTime dateexp;
-            Console.Write("Введите название товара:");
-            string name = Console.ReadLine();
-            ProductType type = ProductType.NoType;
+            string name;
+            string type;
+            Console.ReadLine();
+
+            Console.Write("Выберите тип товара :");
+            HorizontalMenu producttype = new HorizontalMenu(new List<string>() {  "Молочные", "Бытовая химия" });
+            Console.WriteLine();
+            type = producttype.Show();
+
+            do
+            {
+                Console.Write("Введите название товара:");
+                name = Console.ReadLine();
+
+            } while (name.Length == 0);
+
             do
             {
                 Console.Write("Введите цену товара:");
@@ -148,32 +244,147 @@ namespace ProductStore
                 Console.Write("Введите количество товара:");
             } while (!Int32.TryParse(Console.ReadLine(), out quantity));
 
-            /*
-            do
+            Console.Write("Введите тип упаковки:");
+            HorizontalMenu typepacks = new HorizontalMenu(new List<string>() { "Пластик", "Бумажная" });
+            string typepack = typepacks.Show();
+
+            Console.Write("Введите размер упаковки:");
+            HorizontalMenu sizepacks = new HorizontalMenu(new List<string>() { "1л", "2л", "3л" });
+            string typesize = sizepacks.Show();
+            Product temp;
+            switch (type)
             {
-                Console.Write("Введите дату изготовление:");
-            } while (!DateTime.TryParse(Console.ReadLine(), out dateexp));
-            */
+                 
+                case "Молочные":
+                     temp = new Food(name, type, price, quantity, typepack, typesize);
+                    this.Add(temp);
+                    break;
+                case "Бытовая химия":
+                     temp = new HouseholdChemicals(name, type, price, quantity, typepack, typesize);
+                    this.Add(temp);
+                    break;
 
-            dateexp= DateTime.Now;
+                default:
+                    break;
+            }
+            
 
-            Product temp = new Food(name, type, price, quantity, dateexp);
-
-            this.Add(temp);
+            
             Console.Clear();
         }
 
         private void Selling()
         {
-            Console.WriteLine("Реализавать товар");
+            Console.WriteLine("РЕАЛИЗАЦИЯ:");
+            if (this.Count != 0)
+            {
+                int number, quantity;
+                Console.ReadLine();
+                do
+                {
+                    do
+                    {
+                        Console.Write("Введите номер товара:");
+                    } while (!Int32.TryParse(Console.ReadLine(), out number));
+
+                } while (number <= 0 || number > this.Count);
+
+
+                do
+                {
+                    Console.Write("Введите количество товара для реализации:");
+                } while (!Int32.TryParse(Console.ReadLine(), out quantity));
+
+                if (quantity < this[number - 1].Quantity)
+                {
+                    this[number - 1].Quantity -= quantity;
+                    SellingCount += quantity;
+                    SellingSumma += quantity * this[number - 1].Price;
+                    // Summa -= quantity * this[number - 1].Price;
+                }
+                else if (quantity == this[number - 1].Quantity)
+                {
+                    SellingCount += quantity;
+                    SellingSumma += quantity * this[number - 1].Price;
+                    this.Remove(this[number - 1]);
+
+                }
+                else
+                {
+
+                    Console.Write("На складе нет такого количества товара!");
+                    Console.ReadLine();
+                }
+            }
+            else
+            {
+                Console.Write("На складе нет товаров для реализации!");
+                Console.ReadLine();
+            }
+
+
+
+
+            Console.Clear();
         }
         private void Cancellation()
         {
-            Console.WriteLine("Списать товар");
+            Console.WriteLine("CПИСАНИЕ:");
+            if (this.Count != 0)
+            {
+                int number, quantity;
+                Console.ReadLine();
+                do
+                {
+                    do
+                    {
+                        Console.Write("Введите номер товара для списания:");
+                    } while (!Int32.TryParse(Console.ReadLine(), out number));
+
+                } while (number <= 0 || number > this.Count);
+
+
+                do
+                {
+                    Console.Write("Введите количество товара для списание:");
+                } while (!Int32.TryParse(Console.ReadLine(), out quantity));
+
+                if (quantity < this[number - 1].Quantity)
+                {
+                    this[number - 1].Quantity -= quantity;
+                    CancellationCount += quantity;
+                    CancellationSumma += quantity * this[number - 1].Price;
+                    // Summa -= quantity * this[number - 1].Price;
+                }
+                else if (quantity == this[number - 1].Quantity)
+                {
+                    CancellationCount += quantity;
+                    CancellationSumma += quantity * this[number - 1].Price;
+                    this.Remove(this[number - 1]);
+
+                }
+                else
+                {
+                    // Console.Write("На складе нет такого количества товара!");
+                    Console.Write("На складе нет такого количества товара для списания!");
+                    Console.ReadLine();
+                }
+            }
+            else
+            {
+                Console.Write("На складе нет товаров для списания!");
+                Console.ReadLine();
+            }
+
+
+
+
+            Console.Clear();
         }
         private void Exit()
         {
-            Console.WriteLine("Выход");
+            Console.WriteLine("Выход\n Спасибо за пользование програмой!");
+
             ExitFlag = false;
         }
 
@@ -185,7 +396,7 @@ namespace ProductStore
 
             } while (ExitFlag);
 
-            
+
         }
 
     }
@@ -201,6 +412,8 @@ namespace ProductStore
             store.Run();
 
             Console.ReadKey();
+
+
 
         }
 
